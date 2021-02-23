@@ -73,5 +73,14 @@ Rails.application.configure do
   config.show_log_configuration = true
 
   # Customize output via log tags
-  config.log_tags = [proc { Datadog.tracer.active_correlation.to_s }]
+  # TODO: This is an _insane_ hack and we should feel bad
+  config.log_tags = {
+    request_id: :request_id,
+    'dd.trace_id': proc { Datadog.tracer.active_correlation.trace_id.to_s },
+    'dd.span_id': proc { Datadog.tracer.active_correlation.span_id.to_s },
+    'dd.env': proc { Datadog.tracer.active_correlation.env.to_s },
+    'dd.service': proc { Datadog.tracer.active_correlation.service.to_s },
+    'dd.version': proc { Datadog.tracer.active_correlation.version.to_s },
+    ddsource: ["ruby"]
+  }
 end
