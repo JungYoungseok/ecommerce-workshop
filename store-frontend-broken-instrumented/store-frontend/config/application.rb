@@ -43,5 +43,14 @@ module Sandbox
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Disable colorized logging
+    config.colorize_logging = false
+
+    # Change to JSON output
+    config.rails_semantic_logger.format = :json
+
+    # Disable file logging
+    config.rails_semantic_logger.add_file_appender = false
   end
 end
