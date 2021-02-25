@@ -64,7 +64,7 @@ Rails.application.configure do
     config.log_to = %w[stdout]
     STDOUT.sync = true
     config.rails_semantic_logger.add_file_appender = false
-    config.semantic_logger.add_appender(io: STDOUT, level: config.log_level, formatter: config.rails_semantic_logger.format)
+    config.semantic_logger.add_appender(io: STDOUT, level: config.log_level, formatter: DatadogFormatter.new)
   else
     config.log_to = %w[stdout file]
   end
@@ -74,13 +74,14 @@ Rails.application.configure do
 
   # Customize output via log tags
   # TODO: This is an _insane_ hack and we should feel bad
-  config.log_tags = {
-    request_id: :request_id,
-    'dd.trace_id': proc { Datadog.tracer.active_correlation.trace_id.to_s },
-    'dd.span_id': proc { Datadog.tracer.active_correlation.span_id.to_s },
-    'dd.env': proc { Datadog.tracer.active_correlation.env.to_s },
-    'dd.service': proc { Datadog.tracer.active_correlation.service.to_s },
-    'dd.version': proc { Datadog.tracer.active_correlation.version.to_s },
-    ddsource: ["ruby"]
-  }
+  config.log_tags = [ :request_id ]
+  # config.log_tags = {
+  #   request_id: :request_id,
+  #   'dd.trace_id': proc { Datadog.tracer.active_correlation.trace_id.to_s },
+  #   'dd.span_id': proc { Datadog.tracer.active_correlation.span_id.to_s },
+  #   'dd.env': proc { Datadog.tracer.active_correlation.env.to_s },
+  #   'dd.service': proc { Datadog.tracer.active_correlation.service.to_s },
+  #   'dd.version': proc { Datadog.tracer.active_correlation.version.to_s },
+  #   ddsource: ["ruby"]
+  # }
 end
